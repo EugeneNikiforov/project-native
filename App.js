@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import RegistrationScreen from './Screens/RegistrationScreen/RegistrationScreen';
+// import RegistrationScreen from './Screens/RegistrationScreen/RegistrationScreen';
 import photoBG from './assets/photoBG.png';
-// import LoginScreen from './Screens/LoginScreen/LoginScreen';
+import LoginScreen from './Screens/LoginScreen/LoginScreen';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -14,15 +14,17 @@ export default function App() {
     return null;
   };
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={[styles.scrollContainer, styles.scrollViewContent]} keyboardShouldPersistTaps="handled">
-        <ImageBackground source={photoBG} resizeMode='cover' style={styles.bgndImage}>
-          <RegistrationScreen />
-          {/* <LoginScreen /> */}
-          <StatusBar style="auto" />
-        </ImageBackground>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView contentContainerStyle={[styles.scrollContainer, styles.scrollViewContent]} keyboardShouldPersistTaps="handled">
+          <ImageBackground source={photoBG} resizeMode='cover' style={styles.bgndImage}>
+            {/* <RegistrationScreen /> */}
+            <LoginScreen />
+            <StatusBar style="auto" />
+          </ImageBackground>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 

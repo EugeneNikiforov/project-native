@@ -31,6 +31,7 @@ const LoginScreen = () => {
   };
 
   const handleLogin = () => {
+    console.log("email --> ", email, "  password --> ", password);
   };
 
   return (

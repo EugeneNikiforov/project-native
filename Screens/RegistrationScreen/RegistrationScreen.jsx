@@ -38,6 +38,7 @@ const RegistrationScreen = () => {
   };
 
   const handleRegistration = () => {
+    console.log("Login > ", login, "  email > ", email, "  password > ", password);
   };
 
   const handleLogin = () => {
