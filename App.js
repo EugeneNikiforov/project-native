@@ -1,9 +1,14 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useFonts } from 'expo-font';
-// import RegistrationScreen from './Screens/RegistrationScreen/RegistrationScreen';
-import photoBG from './assets/photoBG.png';
+import RegistrationScreen from './Screens/RegistrationScreen/RegistrationScreen';
+// import photoBG from './assets/photoBG.png';
 import LoginScreen from './Screens/LoginScreen/LoginScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+const MainStack = createStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -14,33 +19,28 @@ export default function App() {
     return null;
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={[styles.scrollContainer, styles.scrollViewContent]} keyboardShouldPersistTaps="handled">
-          <ImageBackground source={photoBG} resizeMode='cover' style={styles.bgndImage}>
-            {/* <RegistrationScreen /> */}
-            <LoginScreen />
-            <StatusBar style="auto" />
-          </ImageBackground>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        <NavigationContainer>
+          <MainStack.Navigator initialRouteName="Login">
+            <MainStack.Screen name="Registration" component={RegistrationScreen} options={{ headerShown: false }} />
+            <MainStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          </MainStack.Navigator>
+        </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff'
-  },
-  scrollContainer: {
-    flexGrow: 1,
-  },
-  scrollViewContent: {
-    marginBottom: 32
-  },
-  bgndImage: {
-    flex: 1,
-    justifyContent: 'center'
-  }
-});
+// const styles = StyleSheet.create({
+  // containerOuter: {
+  //   flex: 1,
+  //   backgroundColor: '#fff'
+  // },
+  // scrollContainer: {
+  //   flexGrow: 1,
+  // },
+  // scrollViewContent: {
+  //   marginBottom: 32
+  // },
+  // bgndImage: {
+  //   flex: 1,
+  //   justifyContent: 'center'
+  // }
+// });

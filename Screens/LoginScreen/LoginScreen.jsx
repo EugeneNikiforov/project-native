@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ImageBackground, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import photoBG from '../../assets/photoBG.png';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -35,6 +36,11 @@ const LoginScreen = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView style={styles.containerOuter} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer, styles.scrollViewContent]} keyboardShouldPersistTaps="handled">
+    <View style={styles.container}>
+      <ImageBackground source={photoBG} resizeMode='cover' style={styles.bgndImage}>
     <View style={styles.form}>
       <Text style={styles.header}>Войти</Text>
       <TextInput
@@ -78,12 +84,39 @@ const LoginScreen = () => {
         <Text style={styles.linkRegisterText}>Нет аккаунта? Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
+    </ImageBackground>
+    </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+  containerOuter: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  scrollViewContent: {
+    marginBottom: 32
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  bgndImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   form: { 
     flex: 1, 
     alignItems: 'center', 

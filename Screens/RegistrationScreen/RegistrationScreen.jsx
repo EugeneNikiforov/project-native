@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ImageBackground, View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import photoBG from '../../assets/photoBG.png';
 
 const RegistrationScreen = () => {
   const [login, setLogin] = useState('');
@@ -52,6 +53,11 @@ const RegistrationScreen = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView style={styles.containerOuter} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer, styles.scrollViewContent]} keyboardShouldPersistTaps="handled">
+    <View style={styles.container}>
+      <ImageBackground source={photoBG} resizeMode='cover' style={styles.bgndImage}>
     <View style={styles.form}>
       <View style={styles.userPhotoView}>
         {photo && <Image source={{ uri: photo }} style={styles.userPhoto} />}
@@ -109,12 +115,39 @@ const RegistrationScreen = () => {
         <Text style={styles.linkLoginText}>Уже есть аккаунт? Войти</Text>
       </TouchableOpacity>
     </View>
+    </ImageBackground>
+    </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default RegistrationScreen;
   
   const styles = StyleSheet.create({
+    containerOuter: {
+      flex: 1,
+      backgroundColor: '#fff'
+    },
+    scrollContainer: {
+      flexGrow: 1,
+    },
+    scrollViewContent: {
+      marginBottom: 32
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    bgndImage: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
     form: { 
       flex: 1, 
       alignItems: 'center', 
