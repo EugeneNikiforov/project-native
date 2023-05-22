@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ImageBackground, View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { ScrollView,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  View, Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet } from 'react-native';
 import photoBG from '../../assets/photoBG.png';
+import { useNavigation } from '@react-navigation/native';
 
 const RegistrationScreen = () => {
   const [login, setLogin] = useState('');
@@ -12,6 +22,7 @@ const RegistrationScreen = () => {
   const [showEmailFocus, setShowEmailFocus] = useState(false);
   const [showPasswordFocus, setShowPasswordFocus] = useState(false);
   // const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const navigation = useNavigation();
 
   const handleLoginFocus = () => {
     setShowLoginFocus(true);
@@ -39,10 +50,12 @@ const RegistrationScreen = () => {
   };
 
   const handleRegistration = () => {
-    console.log("Login > ", login, "  email > ", email, "  password > ", password);
+    navigation.navigate("Home");
+    // console.log("Login > ", login, "  email > ", email, "  password > ", password);
   };
 
-  const handleLogin = () => {
+  const toLogin = () => {
+    navigation.navigate("Login");
   };
 
   const handleAddPhoto = () => {
@@ -111,7 +124,7 @@ const RegistrationScreen = () => {
       <TouchableOpacity onPress={handleRegistration} style={styles.btnRegister}>
         <Text style={styles.btnRegisterText}>Зарегистрироваться</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin} style={styles.linkLogin}>
+      <TouchableOpacity onPress={toLogin} style={styles.linkLogin}>
         <Text style={styles.linkLoginText}>Уже есть аккаунт? Войти</Text>
       </TouchableOpacity>
     </View>

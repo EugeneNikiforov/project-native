@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ImageBackground, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  View, Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet } from 'react-native';
 import photoBG from '../../assets/photoBG.png';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +18,7 @@ const LoginScreen = () => {
   const [showEmailFocus, setShowEmailFocus] = useState(false);
   const [showPasswordFocus, setShowPasswordFocus] = useState(false);
   // const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const navigation = useNavigation();
 
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -32,7 +42,8 @@ const LoginScreen = () => {
   };
 
   const handleLogin = () => {
-    console.log("email --> ", email, "  password --> ", password);
+    navigation.navigate("Home");
+    // console.log("email --> ", email, "  password --> ", password);
   };
 
   return (
@@ -80,7 +91,7 @@ const LoginScreen = () => {
       <TouchableOpacity onPress={handleLogin} style={styles.btnLogin}>
         <Text style={styles.btnLoginText}>Войти</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.linkRegister}>
+      <TouchableOpacity onPress={() => navigation.navigate("Registration")} style={styles.linkRegister}>
         <Text style={styles.linkRegisterText}>Нет аккаунта? Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
