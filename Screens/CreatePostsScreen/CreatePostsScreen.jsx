@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
+
+export const PhotoContext = React.createContext();
+// const { GOOGLE_MAPS_API_KEY } = process.env;
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -11,6 +14,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState(null);
   const [country, setCountry] = useState(null);
+  const [photoPath, setPhotoPath] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -26,6 +30,12 @@ const CreatePostsScreen = ({ navigation }) => {
         console.log("Permission to access camera was denied");
       }
     })();
+    (async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission to access media library was denied");
+      }
+    })();
     getLocation();
   }, []);
 
@@ -34,6 +44,7 @@ const CreatePostsScreen = ({ navigation }) => {
       const photo = await camera.takePictureAsync();
       setPhoto(photo.uri);
       await MediaLibrary.createAssetAsync(photo.uri);
+      setPhotoPath(photo.uri);
       getAddress();
     } catch (error) {
       console.log(error);
@@ -71,6 +82,7 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   return (
+    <PhotoContext.Provider value={photoPath}>
     <View style={styles.container}>
       <View style={styles.ImageWrapper}>
         <Camera style={styles.cameraContainer} type={Camera.Constants.Type.back} ref={ref => setCamera(ref)}>
@@ -150,6 +162,7 @@ const CreatePostsScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+    </PhotoContext.Provider>
   );
 };
 

@@ -1,24 +1,25 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import PostsScreen from '../PostsScreen/PostsScreen';
+// import PostsScreen from '../PostsScreen/PostsScreen';
 import CreatePostsScreen from '../CreatePostsScreen/CreatePostsScreen';
-// import ProfileScreen from '../ProfileScreen/ProfileScreen';
+import ProfileScreen from '../ProfileScreen/ProfileScreen';
 import { AntDesign } from '@expo/vector-icons';
 import { View, TouchableOpacity } from 'react-native';
 import logoutIcon from '../../assets/icons/logout.png';
-import CommentsScreen from '../CommentsScreen/CommentsScreen';
+import PostsScreenNav from '../PostsScreen/PostScreenNav';
+// import CommentsScreen from '../CommentsScreen/CommentsScreen';
 
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
   return (
       <Tab.Navigator
-        initialRouteName="PostsScreen"
+        initialRouteName="PostsScreenNav"
         screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
     
-                if (route.name === 'PostsScreen') {
+                if (route.name === 'PostsScreenNav') {
                   iconName = focused ? 'appstore-o' : 'appstore-o';
                 } else if (route.name === 'CreatePostsScreen') {
                   iconName = focused ? 'plus' : 'plus';
@@ -47,9 +48,14 @@ const Home = () => {
           inactiveTintColor: '#212121',
         }}
       >
-        <Tab.Screen name="PostsScreen" component={PostsScreen} />
-        <Tab.Screen name="CreatePostsScreen" component={CreatePostsScreen} />
-        <Tab.Screen name="ProfileScreen" component={CommentsScreen} />
+        <Tab.Screen name="PostsScreenNav" component={PostsScreenNav} options={{ headerShown: false }} />
+        <Tab.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{ title: "Создать публикацию",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          } }} />
+        <Tab.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
       </Tab.Navigator>
   );
 };

@@ -55,10 +55,50 @@ const CommentsScreen = ({ route }) => {
           style={{ flex: 1 }}
         >
           <View style={{ alignItems: "center", marginBottom: 32 }}>
-            <Image style={styles.image} source={{ uri: photo }} />
+            <Image style={styles.image} source={require("../../assets/postForest.jpg")} />
           </View>
 
-          <FlatList
+          <View style={styles.commentsWrapper}>
+            <View style={styles.userComment}>
+              <Image
+                style={styles.userImage}
+                source={require("../../assets/ellipseAva.jpg")}
+              />
+              <View style={styles.commentContent}>
+                <Text style={styles.commentText}>Really love your most recent photo. 
+                  I’ve been trying to capture the same thing for a few months and would 
+                  love some tips!</Text>
+                <Text style={styles.commentDate}>09 июня, 2020 | 08:40</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.commentsWrapper}>
+            <View style={styles.userComment}>
+              <View style={styles.commentContent}>
+                <Text style={styles.commentText}>A fast 50mm like f1.8 would help with the bokeh. 
+                  I’ve been using primes as they tend to get a bit sharper images.</Text>
+                <Text style={styles.commentDate}>09 июня, 2020 | 09:14</Text>
+              </View>
+              <Image
+                style={styles.userImageEl}
+                source={require("../../assets/ellipseUserAva.jpg")}
+              />
+            </View>
+          </View>
+          {/* <View style={styles.commentsWrapper}>
+            <View style={styles.userComment}>
+              <Image
+                style={styles.userImage}
+                source={require("../../assets/ellipseAva.jpg")}
+              />
+              <View style={styles.commentContent}>
+                <Text style={styles.commentText}>Thank you! That was very helpful!</Text>
+                <Text style={styles.commentDate}>09 июня, 2020 | 09:20</Text>
+              </View>
+            </View>
+          </View> */}
+
+          {/* <FlatList
             data={comments}
             renderItem={({ item }) => (
               <View style={styles.commentsWrapper}>
@@ -77,7 +117,7 @@ const CommentsScreen = ({ route }) => {
               </View>
             )}
             keyExtractor={(item, indx) => indx.toString()}
-          />
+          /> */}
           <View style={styles.inputWrapper}>
             <TextInput
               style={{
@@ -123,6 +163,11 @@ const styles = StyleSheet.create({
   userImage: {
     width: 28,
     height: 28,
+  },
+  userImageEl: {
+    width: 28,
+    height: 28,
+    marginLeft: 16
   },
 
   commentsWrapper: {

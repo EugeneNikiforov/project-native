@@ -1,27 +1,47 @@
-import { Text, StyleSheet, View } from "react-native";
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import MapScreen from "../MapScreen/MapScreen";
+import CommentsScreen from "../CommentsScreen/CommentsScreen";
+import ProfileScreenMarkup from "./ProfileScreenMarkup";
+
+const ProfileStack = createStackNavigator();
 
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>UserName</Text>
-    </View>
+    <ProfileStack.Navigator initialRouteName="Profile">
+      <ProfileStack.Screen
+        name="ProfileScreenMarkup"
+        component={ProfileScreenMarkup}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{
+          title: "Карта",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <ProfileStack.Screen
+        name="CommentsScreen"
+        component={CommentsScreen}
+        options={{
+          title: "Комментарии",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+        }}
+      />
+    </ProfileStack.Navigator>
   );
 };
 
 export default ProfileScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#ffffff",
-        paddingHorizontal: 16,
-    },
-    text: {
-        fontFamily: 'Roboto-500', 
-        fontSize: 30,
-        lineHeight: 35,
-        textAlign: 'center',
-        color: '#212121',
-        marginTop: 180
-    }
-  });

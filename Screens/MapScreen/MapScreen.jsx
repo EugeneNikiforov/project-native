@@ -1,27 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 const MapScreen = ({ route }) => {
-  const { latitude, longitude } = route.params.location.coords;
+  const [initialRegion, setInitialRegion] = useState({
+    latitude: route.params?.location?.coords?.latitude || 50.5085300,
+    longitude: route.params?.location?.coords?.longitude || 30.5007400,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
   return (
     <View style={styles.container}>
       <MapView
+        provider={PROVIDER_GOOGLE}
         style={styles.mapStyles}
-        initialRegion={{
-          latitude: latitude ? latitude : "51.5085300",
-          longitude: longitude ? longitude : "0.1257400",
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+        initialRegion={initialRegion}
       >
-        <Marker
-          coordinate={{
-            latitude: latitude ? latitude : "51.5085300",
-            longitude: longitude ? longitude : "0.1257400",
-          }}
-          title="Travel photo"
-        />
+        {initialRegion.latitude && initialRegion.longitude && (
+          <Marker
+            coordinate={{
+              latitude: initialRegion.latitude,
+              longitude: initialRegion.longitude,
+            }}
+            title="Travel photo"
+          />
+        )}
       </MapView>
     </View>
   );
