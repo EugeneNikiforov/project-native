@@ -2,10 +2,11 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PostsScreen from '../PostsScreen/PostsScreen';
 import CreatePostsScreen from '../CreatePostsScreen/CreatePostsScreen';
-import ProfileScreen from '../ProfileScreen/ProfileScreen';
+// import ProfileScreen from '../ProfileScreen/ProfileScreen';
 import { AntDesign } from '@expo/vector-icons';
 import { View, TouchableOpacity } from 'react-native';
 import logoutIcon from '../../assets/icons/logout.png';
+import CommentsScreen from '../CommentsScreen/CommentsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +49,7 @@ const Home = () => {
       >
         <Tab.Screen name="PostsScreen" component={PostsScreen} />
         <Tab.Screen name="CreatePostsScreen" component={CreatePostsScreen} />
-        <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Tab.Screen name="ProfileScreen" component={CommentsScreen} />
       </Tab.Navigator>
   );
 };

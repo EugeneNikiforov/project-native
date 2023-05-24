@@ -8,7 +8,8 @@ import { ScrollView,
   TextInput,
   TouchableOpacity,
   Image,
-  StyleSheet } from 'react-native';
+  StyleSheet,
+  Platform } from 'react-native';
 import photoBG from '../../assets/photoBG.png';
 import { useNavigation } from '@react-navigation/native';
 
