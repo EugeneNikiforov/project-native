@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Camera } from 'expo-camera';
-// import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 
 const CreatePostsScreen = ({ navigation }) => {
@@ -21,6 +21,7 @@ const CreatePostsScreen = ({ navigation }) => {
     })();
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
         console.log("Permission to access camera was denied");
       }
@@ -32,6 +33,7 @@ const CreatePostsScreen = ({ navigation }) => {
     try {
       const photo = await camera.takePictureAsync();
       setPhoto(photo.uri);
+      await MediaLibrary.createAssetAsync(photo.uri);
       getAddress();
     } catch (error) {
       console.log(error);
