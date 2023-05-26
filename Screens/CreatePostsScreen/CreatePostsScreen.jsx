@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
-import * as Location from 'expo-location';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  Alert,
+} from "react-native";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
+import app from "../../config/firebase";
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
-export const PhotoContext = React.createContext();
-// const { GOOGLE_MAPS_API_KEY } = process.env;
+const storage = getStorage(app);
+const db = getFirestore(app);
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -14,26 +25,20 @@ const CreatePostsScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState(null);
   const [country, setCountry] = useState(null);
-  const [photoPath, setPhotoPath] = useState(null);
+
+  const { userId, login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+        Alert.alert("Permission to access location was denied");
       }
     })();
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access camera was denied");
-      }
-    })();
-    (async () => {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission to access media library was denied");
+        Alert.alert("Permission to access camera was denied");
       }
     })();
     getLocation();
@@ -43,8 +48,6 @@ const CreatePostsScreen = ({ navigation }) => {
     try {
       const photo = await camera.takePictureAsync();
       setPhoto(photo.uri);
-      await MediaLibrary.createAssetAsync(photo.uri);
-      setPhotoPath(photo.uri);
       getAddress();
     } catch (error) {
       console.log(error);
@@ -69,23 +72,57 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
-  const resetFields = () => {
+  const uploadPhotoToServer = async () => {
+    let photoUrl = '';
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    const storageRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(storageRef, file);
+    await getDownloadURL(storageRef).then((url) => {
+      photoUrl = url;
+    });
+    return photoUrl;
+  };
+
+  const resetFunction = () => {
     setPhoto(null);
     setName("");
     setAddress(null);
     setCountry(null);
   };
 
-  const publishPost = () => {
-    navigation.navigate("PostsScreen");
-    resetFields();
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    try {
+      await addDoc(collection(db, "posts"), {
+        photo: photo,
+        name: name,
+        location: location,
+        address: address,
+        userId: userId,
+        login: login,
+        country: country,
+      }).then(() => {
+        console.log("Uploaded!");
+      });
+      resetFunction();
+    } catch (e) {
+      console.log('uploadPostToServer ERROR -->>', e.message)
+      Alert.alert("Something happened");
+    }
+  };
+
+  const publishPost = async () => {
+    uploadPostToServer();
+    await navigation.navigate("PostsScreen");
+    resetFunction();
   };
 
   return (
-    <PhotoContext.Provider value={photoPath}>
     <View style={styles.container}>
       <View style={styles.ImageWrapper}>
-        <Camera style={styles.cameraContainer} type={Camera.Constants.Type.back} ref={ref => setCamera(ref)}>
+        <Camera style={styles.cameraContainer} ref={setCamera}>
           {photo && (
             <View style={styles.takePhotoContainer}>
               <Image
@@ -115,7 +152,7 @@ const CreatePostsScreen = ({ navigation }) => {
       <View style={styles.form}>
         <View>
           <TextInput
-            placeholder="Название"
+            placeholder="Название..."
             placeholderTextColor="#BDBDBD"
             value={name}
             onChangeText={(text) => setName(text)}
@@ -124,7 +161,7 @@ const CreatePostsScreen = ({ navigation }) => {
         </View>
         <View>
           <TextInput
-            placeholder="Местность"
+            placeholder="Местность..."
             placeholderTextColor="#BDBDBD"
             value={country}
             onChangeText={(text) => setCountry(text)}
@@ -162,7 +199,6 @@ const CreatePostsScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
-    </PhotoContext.Provider>
   );
 };
 
@@ -199,7 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
-    fontFamily: 'Roboto-400',
+    fontFamily: "Roboto-400",
   },
   form: {
     width: "100%",
@@ -218,11 +254,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
-    fontFamily: 'Roboto-500',
+    fontFamily: "Roboto-500",
   },
   input2: {
     paddingLeft: 24,
-    fontFamily: 'Roboto-400',
+    fontFamily: "Roboto-400",
   },
   mapPin: {
     position: "absolute",
@@ -243,10 +279,10 @@ const styles = StyleSheet.create({
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
-    fontFamily: 'Roboto-400',
+    fontFamily: "Roboto-400",
   },
   btnDelete: {
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });

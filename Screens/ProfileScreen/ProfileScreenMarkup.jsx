@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ImageBackground,
   View,
@@ -10,15 +11,39 @@ import {
 } from "react-native";
 import { MaterialIcons, EvilIcons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { authSignOutUser } from "../../redux/auth/authOperations";
+import {
+  getFirestore,
+  onSnapshot,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
+import app from "../../config/firebase";
+
+const db = getFirestore(app);
 
 const ProfileScreenMarkup = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  const navigationLogout = useNavigation();
+  const { login, userId } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const q = query(collection(db, "posts"), where("userId", "==", userId));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const posts = [];
+      querySnapshot.forEach((doc) => {
+        posts.push({ ...doc.data(), id: doc.id });
+      });
+      setPosts(posts);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const signOut = () => {
-    navigationLogout.navigate("Login");
+    dispatch(authSignOutUser());
   };
 
   return (
@@ -49,7 +74,7 @@ const ProfileScreenMarkup = ({ navigation }) => {
             </View>
           </TouchableOpacity>
           <View>
-            <Text style={styles.profileTitle}>"login"</Text>
+            <Text style={styles.profileTitle}>{login}</Text>
           </View>
           <FlatList
             data={posts}
@@ -86,7 +111,7 @@ const ProfileScreenMarkup = ({ navigation }) => {
                         >
                           <EvilIcons name="comment" size={24} color="#BDBDBD" />
                         </TouchableOpacity>
-                        <Text style={styles.commentsNumber}>0</Text>
+                        <Text style={styles.commentsNumber}>1</Text>
                       </View>
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}

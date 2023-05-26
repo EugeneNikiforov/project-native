@@ -13,6 +13,7 @@ import { authSlice } from "./authReducer";
 
 const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
 const auth = getAuth(app);
+// console.log(auth);
 
 export const authSignUpUser =
   ({ email, password, login }) =>
@@ -40,31 +41,41 @@ export const authSignUpUser =
     }
   };
 
-export const authSignInUser =
+  export const authSignInUser =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.log(error);
       console.log(error.message);
     }
   };
-export const authSignOutUser = () => async (dispatch, getState) => {
-  signOut(auth);
-  dispatch(authSignOut());
-};
-
-export const authStateCahngeUser = () => async (dispatch, getState) => {
-  await onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const userUpdateProfile = {
-        login: user.displayName,
-        userId: user.uid,
-      };
-
-      dispatch(authStateChange({ stateChange: true }));
-      dispatch(updateUserProfile(userUpdateProfile));
+  export const authSignOutUser = () => async (dispatch, getState) => {
+    try {
+      await signOut(auth);
+      dispatch(authSignOut());
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
     }
-  });
-};
+  };
+
+  export const authStateCahngeUser = () => async (dispatch, getState) => {
+    try {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const userUpdateProfile = {
+            login: user.displayName,
+            userId: user.uid,
+          };
+  
+          dispatch(authStateChange({ stateChange: true }));
+          dispatch(updateUserProfile(userUpdateProfile));
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+    }
+  };

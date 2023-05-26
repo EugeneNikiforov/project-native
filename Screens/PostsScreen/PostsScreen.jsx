@@ -1,32 +1,36 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
 import logoutIcon from '../../assets/icons/logout.png';
-import { useNavigation } from '@react-navigation/native';
-// import { MediaLibrary } from 'expo-media-library';
-import { PhotoContext } from '../CreatePostsScreen/CreatePostsScreen';
+// import { useNavigation } from '@react-navigation/native';
 import { EvilIcons } from '@expo/vector-icons';
+import { authSignOutUser } from "../../redux/auth/authOperations";
+import { getFirestore, collection, query, onSnapshot } from "firebase/firestore";
+import app from "../../config/firebase";
+
+const db = getFirestore(app);
 
 const PostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  const photoPath = useContext(PhotoContext);
-  const navigationLogout = useNavigation();
+  const { login, email } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const fetchPosts = async () => {
-  //     try {
-  //       const { assets } = await MediaLibrary.getAssetsAsync({ mediaType: 'photo' });
-  //       const storedPosts = assets.map(asset => ({ id: asset.id, photo: asset.uri }));
-  //       setPosts(storedPosts);
-  //     } catch (error) {
-  //       console.log('Error fetching posts:', error);
-  //     }
-  //   };
-
-  //   fetchPosts();
-  // }, []);
+  useEffect(() => {
+    const q = query(collection(db, "posts"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const allPosts = [];
+      querySnapshot.forEach((doc) => {
+        allPosts.push({ ...doc.data(), id: doc.id });
+      });
+      setPosts(allPosts);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
     
   const handleLogout = () => {
-    navigationLogout.navigate("Login");
+    dispatch(authSignOutUser());
   };
 
   React.useLayoutEffect(() => {
@@ -40,82 +44,18 @@ const PostsScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.userWrapper}>
         <Image
           style={{ width: 60, height: 60 }}
           source={require("../../assets/user.jpg")}
         />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>Зоя Жорівна</Text>
-          <Text style={styles.userEmail}>privet@zoya.com</Text>
+          <Text style={styles.userName}>Логин {login}</Text>
+          <Text style={styles.userEmail}>Почта {email}</Text>
         </View>
       </View>
-      <View>
-            <View style={styles.postsWrapper}>
-              <View style={{ alignItems: "center" }}>
-                <Image
-                  source={require("../../assets/postForest.jpg")}
-                  style={{ width: 343, height: 240 }}
-                />
-              </View>
-              <View style={styles.postMainInfo}>
-                <Text style={styles.postName}>Ліс</Text>
-                <View style={styles.postInfo}>
-                  <View style={{ flexDirection: "row", marginLeft: -7 }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("CommentsScreen")}
-                    >
-                      <EvilIcons name="comment" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.commentsNumber}>0</Text>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("MapScreen")}
-                    >
-                      <EvilIcons name="location" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.postLocation}>Ivano-Frankivs'k Region, Ukraine</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.postsWrapper}>
-              <View style={{ alignItems: "center" }}>
-                <Image
-                  source={require("../../assets/postDusk.jpg")}
-                  style={{ width: 343, height: 240 }}
-                />
-              </View>
-              <View style={styles.postMainInfo}>
-                <Text style={styles.postName}>Захід Cонця в українському Криму</Text>
-                <View style={styles.postInfo}>
-                  <View style={{ flexDirection: "row", marginLeft: -7 }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("CommentsScreen")}
-                    >
-                      <EvilIcons name="comment" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.commentsNumber}>0</Text>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("MapScreen")}
-                    >
-                      <EvilIcons name="location" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.postLocation}>Crimea Region, Ukraine</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-      {/* <FlatList
+      <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -142,7 +82,7 @@ const PostsScreen = ({ navigation }) => {
                     >
                       <EvilIcons name="comment" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
-                    <Text style={styles.commentsNumber}>0</Text>
+                    <Text style={styles.commentsNumber}>1</Text>
                   </View>
                   <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
@@ -160,13 +100,12 @@ const PostsScreen = ({ navigation }) => {
             </View>
           </View>
         )}
-      /> */}
-    </ScrollView>
+      />
+    </View>
   );
 };
 
 export default PostsScreen;
-
 
 const styles = StyleSheet.create({
   container: {

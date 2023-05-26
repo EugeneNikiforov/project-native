@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import {
   View,
@@ -13,17 +14,29 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   FlatList,
-  Platform,
 } from "react-native";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
+import app from "../../config/firebase";
+
+const db = getFirestore(app);
 
 const CommentsScreen = ({ route }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
-  const [photo, setPhoto] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 20 * 2
   );
+
+  const { postId, photo } = route.params;
+  const { login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     getAllComments();
@@ -38,9 +51,28 @@ const CommentsScreen = ({ route }) => {
     };
   }, []);
 
-  const createComment = () => {}
+  const getAllComments = async () => {
+    const postRef = doc(db, "posts", postId);
+    const q = query(collection(postRef, "comments"));
+    onSnapshot(q, (querySnapshot) => {
+      const comments = [];
+      querySnapshot.forEach((doc) => {
+        comments.push(doc.data());
+      });
+      setComments(comments);
+    });
+  };
 
-  const getAllComments = () => {}
+  const createComment = async () => {
+    const postRef = doc(db, "posts", postId);
+    await addDoc(collection(postRef, "comments"), {
+      login,
+      comment,
+    });
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    setComment("");
+  };
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -55,50 +87,10 @@ const CommentsScreen = ({ route }) => {
           style={{ flex: 1 }}
         >
           <View style={{ alignItems: "center", marginBottom: 32 }}>
-            <Image style={styles.image} source={require("../../assets/postForest.jpg")} />
+            <Image style={styles.image} source={{ uri: photo }} />
           </View>
 
-          <View style={styles.commentsWrapper}>
-            <View style={styles.userComment}>
-              <Image
-                style={styles.userImage}
-                source={require("../../assets/ellipseAva.jpg")}
-              />
-              <View style={styles.commentContent}>
-                <Text style={styles.commentText}>Really love your most recent photo. 
-                  I’ve been trying to capture the same thing for a few months and would 
-                  love some tips!</Text>
-                <Text style={styles.commentDate}>09 июня, 2020 | 08:40</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.commentsWrapper}>
-            <View style={styles.userComment}>
-              <View style={styles.commentContent}>
-                <Text style={styles.commentText}>A fast 50mm like f1.8 would help with the bokeh. 
-                  I’ve been using primes as they tend to get a bit sharper images.</Text>
-                <Text style={styles.commentDate}>09 июня, 2020 | 09:14</Text>
-              </View>
-              <Image
-                style={styles.userImageEl}
-                source={require("../../assets/ellipseUserAva.jpg")}
-              />
-            </View>
-          </View>
-          {/* <View style={styles.commentsWrapper}>
-            <View style={styles.userComment}>
-              <Image
-                style={styles.userImage}
-                source={require("../../assets/ellipseAva.jpg")}
-              />
-              <View style={styles.commentContent}>
-                <Text style={styles.commentText}>Thank you! That was very helpful!</Text>
-                <Text style={styles.commentDate}>09 июня, 2020 | 09:20</Text>
-              </View>
-            </View>
-          </View> */}
-
-          {/* <FlatList
+          <FlatList
             data={comments}
             renderItem={({ item }) => (
               <View style={styles.commentsWrapper}>
@@ -110,14 +102,14 @@ const CommentsScreen = ({ route }) => {
                   <View style={styles.commentContent}>
                     <Text style={styles.commentText}>{item.comment}</Text>
                     <Text style={styles.commentDate}>
-                      09 march, 2023 | 09:00
+                      09 june, 2020 | 09:14
                     </Text>
                   </View>
                 </View>
               </View>
             )}
             keyExtractor={(item, indx) => indx.toString()}
-          /> */}
+          />
           <View style={styles.inputWrapper}>
             <TextInput
               style={{
@@ -239,4 +231,3 @@ const styles = StyleSheet.create({
     right: 20,
   },
 });
-

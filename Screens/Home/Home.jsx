@@ -4,8 +4,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CreatePostsScreen from '../CreatePostsScreen/CreatePostsScreen';
 import ProfileScreen from '../ProfileScreen/ProfileScreen';
 import { AntDesign } from '@expo/vector-icons';
-import { View, TouchableOpacity } from 'react-native';
-import logoutIcon from '../../assets/icons/logout.png';
 import PostsScreenNav from '../PostsScreen/PostScreenNav';
 // import CommentsScreen from '../CommentsScreen/CommentsScreen';
 

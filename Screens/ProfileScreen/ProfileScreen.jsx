@@ -8,7 +8,7 @@ const ProfileStack = createStackNavigator();
 
 const ProfileScreen = () => {
   return (
-    <ProfileStack.Navigator initialRouteName="Profile">
+    <ProfileStack.Navigator initialRouteName="ProfileScreenMarkup">
       <ProfileStack.Screen
         name="ProfileScreenMarkup"
         component={ProfileScreenMarkup}
