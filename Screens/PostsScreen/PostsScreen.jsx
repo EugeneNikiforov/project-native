@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
 import logoutIcon from '../../assets/icons/logout.png';
-// import { useNavigation } from '@react-navigation/native';
 import { EvilIcons } from '@expo/vector-icons';
 import { authSignOutUser } from "../../redux/auth/authOperations";
 import { getFirestore, collection, query, onSnapshot } from "firebase/firestore";

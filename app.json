@@ -34,10 +34,16 @@
         "googleMaps": {
           "apiKey": "$GOOGLE_MAPS_API_KEY"
         }
-      }
+      },
+      "package": "com.grafikoff.projectnative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2b7723f9-190d-4832-b94f-80ecf5440317"
+      }
     }
   }
 }

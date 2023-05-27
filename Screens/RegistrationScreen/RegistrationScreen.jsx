@@ -15,7 +15,6 @@ import {
   Dimensions,
 } from "react-native";
 import photoBG from '../../assets/photoBG.png';
-// import { useNavigation } from '@react-navigation/native';
 import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
