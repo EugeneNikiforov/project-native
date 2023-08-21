@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import photoBG from '../../assets/photoBG.png';
 import { authSignUpUser } from "../../redux/auth/authOperations";
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const initialState = {
   login: "",
@@ -53,10 +54,10 @@ export default function RegistrationScreen({ navigation }) {
     setState(initialState);
   };
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
+  // const keyboardHide = () => {
+  //   setIsShowKeyboard(false);
+  //   Keyboard.dismiss();
+  // };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -90,14 +91,14 @@ export default function RegistrationScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
           source={photoBG}
         >
           <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : ""}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View
               style={{
